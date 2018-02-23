@@ -11,18 +11,36 @@
       </div>
     </div>
     <div class="choice-box">
-      <span> < </span>
-      <div class="choice-month"></div>
-      <span> > </span>
+      <span class="month-last hover" @click="monthLast()"> &lt; </span>
+      <span class="month-next hover" @click="monthNext()"> &gt; </span>
+      <div class="choice-month">
+        <div class="choice-nav">
+          <eb-select
+          :selections="month_list"
+          :value="num_month"
+          @on-change="valueCorr($event)"
+          ></eb-select>
+        </div>
+        <div class="choice-nav">
+          <eb-select
+          :selections="year_list"
+          :value="num_year"
+          @on-change="valueCorr($event)"
+          ></eb-select>
+        </div>
+      </div>
     </div>
-    <keep-alve>
-      <calendar :year="year" :month="month" :day="day"></calendar>
-    </keep-alve>
+    <div class="day-box">
+      <keep-alve>
+        <calendar :year="num_year" :month="num_month" :day="num_day" :selections="day_list"></calendar>
+      </keep-alve>
+    </div>
   </div>
 </template>
 
 <script>
 import calendar from './calendar'
+import ebSelect from './components/select'
 export default {
   name:'vue-eb-calendar',
   data(){
@@ -33,13 +51,75 @@ export default {
       day:0,
       hour:0,
       minute:0,
-      second:0
+      second:0,
+      month_list:[1,2,3,4,5,6,7,8,9,10,11,12],
+      num_month:0,
+      year_list:[],
+      num_year:0,
+      day_list:[],
+      num_day:0
     }
   },
-  component:{
+  watch:{
+    num_month(){
+      this.day_list = this.initDay();
+    }
+  },
+  components:{
     calendar,
+    ebSelect
   },
   methods:{
+    initDay(){
+      let _dayList = [];
+      let _monthEnd = new Date(this.num_year,this.num_month,0).getDate(),         // 这个月共多少天
+          _monthEndWeek = new Date(this.num_year,this.num_month,0).getDay(),      // 月末是周几
+          _monthStartWeek = new Date(this.num_year,this.num_month-1,1).getDay();  // 月头是周几
+
+      // 跑一个临时的月份数组
+      let _tempWeek = _monthStartWeek;
+      let n = 0;
+      _dayList.push([]);
+      for(let i=0;i<_monthEnd;i++){
+
+        let _tempDay = {
+          day:i+1,
+          in:true
+        }
+        _dayList[n].push(_tempDay);
+
+        if(i != _monthEnd-1 && (_tempWeek+1+i)%7==0){
+          _dayList.push([]);
+          n++;
+        }
+      }
+
+      // 补月头非周日时所缺天数
+      if(_monthStartWeek != 0){
+        let _lastMonthEnd = new Date(this.num_year,this.num_month-1,0).getDate();
+        for(let i=0;i<_monthStartWeek;i++){
+          let _tempDay = {
+            day:_lastMonthEnd-i,
+            in:false
+          };
+          _dayList[0].unshift(_tempDay);
+        }
+      }
+
+      // 补月末非周六时所缺天数
+      if(_monthEndWeek != 6){
+        for(let i=0;i<6-_monthEndWeek;i++){
+          let _tempDay = {
+            day:1+i,
+            in:false
+          };
+          _dayList[_dayList.length-1].push(_tempDay);
+        }
+      }
+
+      // console.log(_tempDayList);
+      return _dayList;
+    },
     time(){
       let _time = new Date();
       this.date = _time;
@@ -49,9 +129,40 @@ export default {
       this.hour = _time.getHours()>9?_time.getHours():'0'+_time.getHours();
       this.minute = _time.getMinutes()>9?_time.getMinutes():'0'+_time.getMinutes();
       this.second = _time.getSeconds()>9?_time.getSeconds():'0'+ _time.getSeconds();
+    },
+    valueCorr(val){
+      this.num_month = val;
+    },
+    initYearList(num){
+      this.year_list.push(this.num_year);
+      for(let i=0;i<25;i++){
+        this.year_list.push(this.num_year+1+i);
+        this.year_list.unshift(this.num_year-1-i);
+      }
+    },
+    monthLast(){
+      if(this.num_month<2){
+        this.num_year--;
+        this.num_month = 13;
+      }
+      this.num_month--;
+    },
+    monthNext(){
+      if(this.num_month>11){
+        this.num_year++;
+        this.num_month = 0;
+      }
+      this.num_month++;
     }
   },
   mounted(){
+    let _time = new Date();
+    this.num_month = _time.getMonth() +1;
+    this.num_year = _time.getFullYear();
+    this.num_day = _time.getDate();
+    this.initYearList(this.num_year);
+    this.day_list = this.initDay();
+
     setInterval(()=>{
       this.time()
     },100);
@@ -60,22 +171,18 @@ export default {
 </script>
 
 <style scoped>
-*{
+.calendar-box{
   font-family: "Microsoft YaHei","Source Han Sans CN","Helvetica Neue",Helvetica,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","WenQuanYi Micro Hei",Arial,sans-serif;
   user-select:none;
-  -moz-user-select: none;
+  width: 350px;
+  border-radius: 10px;
+  border: 1px solid #CBCBCB;
+  box-shadow: 0 0 5px #CBCBCB;
 }
 
 div{
   margin: 0;
   padding: 0;
-}
-
-.calendar-box{
-  width: 350px;
-  border-radius: 10px;
-  border: 1px solid #CBCBCB;
-  box-shadow: 0 0 5px #CBCBCB;
 }
 
 .time-box{
@@ -100,9 +207,44 @@ div{
   border-top: 1px solid #CBCBCB;
   height:30px;
   line-height:30px;
+  text-align: center;
+}
+
+.month-last,
+.month-next{
+  display: inline-block;
+  width:20%;
+  height: 100%;
+}
+
+.hover:hover{
+  background: rgb(230, 230, 230);
+}
+
+.month-last{
+  float: left;
+}
+
+.month-next{
+  float: right;
 }
 
 .choice-month{
-
+  width: 40%;
+  margin: 0 auto;
 }
+
+.choice-nav{
+  width: 50%;
+  height: 30px;
+  float: left;
+}
+
+.day-box{
+  border-top: 1px solid #D4D4D4;
+  width: 100%;
+  line-height:30px;
+  text-align: center;
+}
+
 </style>
