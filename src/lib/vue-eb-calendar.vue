@@ -31,9 +31,13 @@
       </div>
     </div>
     <div class="day-box">
-      <keep-alve>
-        <calendar :year="num_year" :month="num_month" :day="num_day" :selections="day_list"></calendar>
-      </keep-alve>
+      <keep-alive>
+        <calendar :year="num_year" :month="num_month" :day="num_day" :selections="day_list"
+        @on-change="chioceToDay($event)"></calendar>
+      </keep-alive>
+    </div>
+    <div class="foot-box">
+      {{num_year}}-{{num_month}}-{{num_day}}
     </div>
   </div>
 </template>
@@ -83,6 +87,8 @@ export default {
       for(let i=0;i<_monthEnd;i++){
 
         let _tempDay = {
+          year:this.num_year,
+          month:this.num_month,
           day:i+1,
           in:true
         }
@@ -96,9 +102,15 @@ export default {
 
       // 补月头非周日时所缺天数
       if(_monthStartWeek != 0){
-        let _lastMonthEnd = new Date(this.num_year,this.num_month-1,0).getDate();
+        let _lastDate = new Date(this.num_year,this.num_month-1,0);
+        let _lastMonthEnd = _lastDate.getDate(),
+            _lastYear = _lastDate.getFullYear(),
+            _lastMonth = _lastDate.getMonth()+1;
+
         for(let i=0;i<_monthStartWeek;i++){
           let _tempDay = {
+            year:_lastYear,
+            month:_lastMonth,
             day:_lastMonthEnd-i,
             in:false
           };
@@ -108,8 +120,14 @@ export default {
 
       // 补月末非周六时所缺天数
       if(_monthEndWeek != 6){
+        let _nextDate = new Date(this.num_year,this.num_month,1);
+        let _nextYear = _nextDate.getFullYear(),
+            _nextMonth = _nextDate.getMonth()+1;
+
         for(let i=0;i<6-_monthEndWeek;i++){
           let _tempDay = {
+            year:_nextYear,
+            month:_nextMonth,
             day:1+i,
             in:false
           };
@@ -117,7 +135,6 @@ export default {
         }
       }
 
-      // console.log(_tempDayList);
       return _dayList;
     },
     time(){
@@ -153,6 +170,11 @@ export default {
         this.num_month = 0;
       }
       this.num_month++;
+    },
+    chioceToDay(data){
+      this.num_year = data.year;
+      this.num_month = data.month;
+      this.num_day = data.day;
     }
   },
   mounted(){
@@ -243,8 +265,13 @@ div{
 .day-box{
   border-top: 1px solid #D4D4D4;
   width: 100%;
-  line-height:30px;
   text-align: center;
+}
+
+.foot-box{
+  border-top: 1px solid #cccccc;
+  width: 100%;
+  height: 30px;
 }
 
 </style>
