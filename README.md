@@ -4,6 +4,26 @@
 
 ## 插件的使用
 
+### 安装
+
+```bash
+# 安装
+npm install vue-eb-calendar --save
+
+# 使用
+import vueEbCalendar from 'vue-eb-calendar'
+
+Vue.use(vueEbCalendar)
+
+<vue-eb-calendar></vue-eb-calendar>
+```
+
+
+
+![默认](https://github.com/jiadaoka/vue-eb-calendar/blob/master/eb-001.png)
+
+
+
 ### 显示与隐藏
 
 | 参数     | 类型 | 备注                                                         |
@@ -28,8 +48,6 @@
 > 若设置后yearMin的值比yearMax大，则无法生成年份列表。
 
 
-
-![默认](./eb-001.png)
 
 ## 文件目录结构
 
