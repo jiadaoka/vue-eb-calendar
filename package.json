@@ -1,7 +1,7 @@
 {
   "name": "vue-eb-calendar",
   "description": "Vue日历插件",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "esatbear<756951628@qq.com>",
   "license": "MIT",
   "private": false,

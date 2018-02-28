@@ -20,7 +20,7 @@ Vue.use(vueEbCalendar)
 
 
 
-![默认](https://github.com/jiadaoka/vue-eb-calendar/blob/master/eb-001.png)
+![默认](https://github.com/jiadaoka/vue-eb-calendar/blob/master/eb-001.PNG)
 
 
 
