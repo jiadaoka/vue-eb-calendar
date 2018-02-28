@@ -4,7 +4,12 @@
   "version": "1.0.0",
   "author": "esatbear<756951628@qq.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
+  "main":"dist/vue-eb-calendar.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jiadaoka/vue-eb-calendar"
+  },
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"

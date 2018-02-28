@@ -3,7 +3,7 @@
   <div class="select-title" @click="toggleShow">
     {{ selections[nowIndex] }}
   </div>
-  <div class="select_list" v-if="isShow">
+  <div class="select_list" v-show="isShow">
     <ul>
       <li
       v-for="(item,index) in selections"
@@ -51,7 +51,8 @@ export default {
     chooseSelection(index){
       this.nowIndex = index
       this.isDrop = false
-      this.$emit('on-change',this.selections[index])
+      this.$emit('on-change',this.selections[index]);
+      this.isShow = false;
     },
     toggleShow(){
       this.isShow = !this.isShow;
@@ -101,8 +102,9 @@ ul,div{
 
 .select_list{
   border: 1px solid #e3e3e3;
-  max-height: 300px;
+  max-height: 360px;
   overflow-y: auto;
+  background: #fff;
 }
 
 .select_list li{

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import vueEbCalendar from './lib/index.js'
 
-Vue.use(vueEbCalendar)
+Vue.use(vueEbCalendar);
 
 new Vue({
   el: '#app',

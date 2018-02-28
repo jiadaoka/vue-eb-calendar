@@ -4,6 +4,7 @@ dist/
 npm-debug.log
 yarn-error.log
 .vscode/
+tree.txt
 
 # Editor directories and files
 .idea

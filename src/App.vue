@@ -1,6 +1,15 @@
 <template>
   <div id="app">
-    <vue-eb-calendar></vue-eb-calendar>
+    {{ test }}
+    <vue-eb-calendar
+    :value-date="valueDate"
+    :to-day="toDay"
+    @on-clone = "isShowFun"
+    :date-show="isShow"
+    :yearMax='max'
+    :yearMin='min'
+    @output ="output($event)"
+    ></vue-eb-calendar>
   </div>
 </template>
 
@@ -9,7 +18,20 @@ export default {
   name: 'app',
   data () {
     return {
-
+      valueDate:true,
+      toDay:true,
+      isShow:true,
+      max:2050,
+      min:1990,
+      test:''
+    }
+  },
+  methods:{
+    isShowFun(){
+      this.isShow = false;
+    },
+    output(val){
+      this.test = val;
     }
   }
 }

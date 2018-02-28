@@ -11,7 +11,8 @@
     :key="index">
       <span v-for="(i,ind) in item" :key="ind"
       :class="{ 'to-day':revDay(i.year,i.month,i.day,toDay),
-                'choice-day':revDay(i.year,i.month,i.day,chioceDay)}"
+                'choice-day':revDay(i.year,i.month,i.day,chioceDay),
+                'not-month':!i.in}"
       @click="chioceDayFn(i.year,i.month,i.day)"
       >
         <div>{{ i.day }}</div>
@@ -24,6 +25,9 @@
 <script>
 export default {
   props:{
+    isToDay:{
+      type:null
+    },
     year:{
       type:Number,
     },
@@ -35,7 +39,7 @@ export default {
     },
     selections:{
       type:Array
-    }
+    },
   },
   data(){
     return{
@@ -82,10 +86,12 @@ export default {
     },
     // 返回今天的日期对象
     initToDay(year,month,day){
-      this.toDay = {
-        year:year,
-        month:month,
-        day,day
+      if(this.isToDay){
+        this.toDay = {
+          year:year,
+          month:month,
+          day,day
+        }
       }
     }
   },
@@ -114,28 +120,39 @@ export default {
 }
 
 .day-box{
+  margin-top: 2px;
+}
 
+.day-box:last-child{
+  margin-bottom: 2px;
 }
 
 .week-day{
   width: 100%;
-  margin-top: 5px;
 }
 
 .week-day span{
   display: inline-block;
   width: calc(100% / 7);
-  line-height: 40px;
   height: 40px;
+  padding: 3px 0;
+  box-sizing:border-box;
+  line-height: 34px;
+}
+
+.week-day span.not-month{
+  background: rgb(214, 214, 214);
+  color: #999;
 }
 
 .week-day span div{
-  width: 40px;
+  width: 34px;
+  height: 34px;
   margin: 0 auto;
 }
 
 .week-day span.to-day div{
-  background: rgb(58, 249, 144);
+  background: rgb(143, 221, 250);
   color: #FFF;
   border-radius: 4px;
 }
